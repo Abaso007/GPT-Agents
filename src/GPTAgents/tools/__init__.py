@@ -6,6 +6,8 @@ Feel free to make a pull request and make more tools!
 import os
 import subprocess
 import inspect
+import requests
+import html2text
 
 
 class Tools:
@@ -92,6 +94,44 @@ class RunPython(Tools):
             error_message = str(error)
             # Return the error
             return f"{error_type}: {error_message}"
+
+
+class WebSearch(Tools):
+    """
+    Use a search engine to search the web
+    """
+
+    def use(self, query: str) -> str:
+        """
+        Search the web
+        """
+        resp = requests.post(
+            url="https://ddg-api.herokuapp.com/search",
+            json={"query": query, "limit": 5},
+            timeout=10,
+        )
+        resp.encoding = "utf-8" if resp.encoding is None else resp.encoding
+        search_results = resp.text
+        return search_results
+
+
+class WebCrawler(Tools):
+    """
+    Gets the text from a web page (without HTML)
+    """
+
+    def use(self, url: str) -> str:
+        """
+        Gets the text from a web page (without HTML)
+        """
+        resp = requests.get(url, timeout=60)
+        resp.encoding = "utf-8" if resp.encoding is None else resp.encoding
+        html = resp.text
+        text_maker = html2text.HTML2Text()
+        text_maker.ignore_images = True
+
+        text = text_maker.handle(html)
+        return text
 
 
 # Get a list of all the tools in this module and their docstrings
