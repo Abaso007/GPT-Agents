@@ -10,48 +10,57 @@ class TestTools(unittest.TestCase):
 
     def test_Shell_use(self):
         # Test the Shell class's use method with a simple shell command
-        shell = Shell()
-        output = shell.use('echo "Hello, world!"')
+        output = Shell.use('echo "Hello, world!"')
         self.assertEqual(output, '"Hello, world!"\n')
 
     def test_Shell_use_cd(self):
         # Test the Shell class's use method with the 'cd' command
-        shell = Shell()
-
+        output = Shell.use("cd /nonexistent")
         # Test changing to a non-existent directory
-        output = shell.use("cd /nonexistent")
         self.assertEqual(output, "Directory not found")
 
         # Test changing to the home directory
         with patch.object(os, "chdir") as mock_chdir:
-            output = shell.use("cd")
+            output = Shell.use("cd")
             mock_chdir.assert_called_once_with(os.path.expanduser("~"))
             self.assertEqual(output, "")
 
         # Test changing to a valid directory
         with patch.object(os, "chdir") as mock_chdir:
-            output = shell.use("cd /tmp")
+            output = Shell.use("cd /tmp")
             mock_chdir.assert_called_once_with("/tmp")
             self.assertEqual(output, "")
 
     def test_Shell_use_command_not_found(self):
         # Test the Shell class's use method with a non-existent command
-        shell = Shell()
-        output = shell.use("nonexistentcommand")
+        output = Shell.use("nonexistentcommand")
         self.assertEqual(output, "Command not found")
 
     def test_RunPython_use(self):
         # Test the RunPython class's use method with a simple Python expression
-        run_python = RunPython()
-        output = run_python.use('print("Hello, world!")')
+        output = RunPython.use('print("Hello, world!")')
         self.assertEqual(output, "")
 
     def test_RunPython_use_exception(self):
         # Test the RunPython class's use method with code that raises an exception
-        run_python = RunPython()
         code = "print(1/0)"  # generate a long code that raises an exception
-        output = run_python.use(code)
+        output = RunPython.use(code)
         self.assertTrue("ZeroDivisionError" in output)
+
+    def test_WebCrawler_use(self):
+        # Test the WebCrawler class's use method with a simple URL
+        output = WebCrawler.use("https://example.com")
+        self.assertTrue("Example Domain" in output)
+
+    def test_WebCrawler_use_exception(self):
+        # Test the WebCrawler class's use method with a non-existent URL
+        output = WebCrawler.use("https://nonexistent.example.com")
+        self.assertTrue("Error" in output)
+
+    def test_WebSearch_use(self):
+        # Test the WebSearch class's use method with a simple search query
+        output = WebSearch.use("example.com")
+        self.assertTrue("example.com" in output)
 
 
 if __name__ == "__main__":

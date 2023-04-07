@@ -119,14 +119,22 @@ class WebCrawler:
         """
         Gets the text from a web page (without HTML)
         """
-        resp = requests.get(url, timeout=60)
-        resp.encoding = "utf-8" if resp.encoding is None else resp.encoding
-        html = resp.text
-        text_maker = html2text.HTML2Text()
-        text_maker.ignore_images = True
+        try:
+            resp = requests.get(url, timeout=60)
+            resp.encoding = "utf-8" if resp.encoding is None else resp.encoding
+            html = resp.text
+            text_maker = html2text.HTML2Text()
+            text_maker.ignore_images = True
 
-        text = text_maker.handle(html)
-        return text
+            text = text_maker.handle(html)
+            return text
+        except Exception as error:
+            # Get error type
+            error_type = type(error).__name__
+            # Get error message
+            error_message = str(error)
+            # Return the error
+            return f"Error {error_type}: {error_message}"
 
 
 # Get a list of all the tools in this module and their docstrings
