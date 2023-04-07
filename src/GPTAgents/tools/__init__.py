@@ -10,21 +10,13 @@ import requests
 import html2text
 
 
-class Tools:
-    """
-    Template tools class
-    """
-
-    def __init__(self) -> None:
-        pass
-
-
-class Shell(Tools):
+class Shell:
     """
     This tool allows the AI to interact with the shell and execute arbitrary bash commands
     """
 
-    def use(self, command: str) -> str:
+    @staticmethod
+    def use(command: str) -> str:
         """
         Execute a shell command
         """
@@ -70,12 +62,13 @@ class Shell(Tools):
             return "Command not found"
 
 
-class RunPython(Tools):
+class RunPython:
     """
     Allows the AI to run Python code
     """
 
-    def use(self, code: str) -> str:
+    @staticmethod
+    def use(code: str) -> str:
         """
         Run Python code
         """
@@ -96,12 +89,13 @@ class RunPython(Tools):
             return f"{error_type}: {error_message}"
 
 
-class WebSearch(Tools):
+class WebSearch:
     """
     Use a search engine to search the web
     """
 
-    def use(self, query: str) -> str:
+    @staticmethod
+    def use(query: str) -> str:
         """
         Search the web
         """
@@ -115,12 +109,13 @@ class WebSearch(Tools):
         return search_results
 
 
-class WebCrawler(Tools):
+class WebCrawler:
     """
     Gets the text from a web page (without HTML)
     """
 
-    def use(self, url: str) -> str:
+    @staticmethod
+    def use(url: str) -> str:
         """
         Gets the text from a web page (without HTML)
         """
@@ -139,7 +134,7 @@ tools = []
 
 for name in dir():
     obj = eval(name)
-    if isinstance(obj, type) and issubclass(obj, Tools):
+    if isinstance(obj, type):
         for func_name, func_obj in obj.__dict__.items():
             if callable(func_obj) and func_obj.__qualname__.startswith(
                 obj.__qualname__
@@ -157,7 +152,10 @@ def get_tools() -> str:
     for tool in tools:
         output += f"{tool[0]}: {tool[1]} \n"
         for param in tool[3]:
-            output += f"    {tool[2]}({param.name}: {(param.annotation.__name__)})\n"
+            if param.annotation.__name__ != "_empty":
+                output += (
+                    f"    {tool[2]}({param.name}: {(param.annotation.__name__)})\n"
+                )
     return output
 
 
