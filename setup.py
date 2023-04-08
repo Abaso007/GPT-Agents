@@ -22,6 +22,7 @@ setup(
     license="GNU General Public License v2.0",
     packages=find_packages("src"),
     package_dir={"": "src"},
+    py_modules=["GPTagents"],
     package_data={"": ["*.json"]},
     install_requires=["chromadb", "revChatGPT"],
     classifiers=[

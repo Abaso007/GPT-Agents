@@ -11,5 +11,6 @@ client = chromadb.Client(
     chromadb.config.Settings(
         chroma_db_impl="duckdb+parquet",
         persist_directory=paths.get_memory_path(),
+        anonymized_telemetry=False,
     )
 )
