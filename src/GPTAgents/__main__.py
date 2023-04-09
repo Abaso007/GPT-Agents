@@ -63,8 +63,7 @@ print(json.dumps(plans, indent=2))
 
 ## Step 2: Execute the plan
 completed_tasks = []
-done = False
-while not done:
+while True:
     current_general_task = plans.pop(0)
 
     prompt = f"""
@@ -81,7 +80,6 @@ while not done:
     Completed tasks:
     {completed_tasks}
 
-    Respond in JSON format: {'{ "action": "action", "parameters": "parameters" }'}
     Possible actions:
     - tool: Use a tool to perform an action
     - ask: Ask another AI to generate text
@@ -94,10 +92,21 @@ while not done:
     
     Be specific and avoid using generics. For example, instead of saying "mkdir new_project", actually name the project.
     If there is something you don't know such as popular websites, use tools to research it.
+
+    Respond in JSON format: [{'{ "action": "action", "parameters": "parameters" }'}]. Include multiple actions if necessary.
+    Ensure the response can be parsed.
     """.strip()
 
     response = chatbot.ask(prompt)
 
     print(response)
 
-    done = True
+    ### Do actions
+
+    completed_tasks.append(current_general_task)
+
+    if input() != "x":
+        chatbot.reset()
+        continue
+    else:
+        break
