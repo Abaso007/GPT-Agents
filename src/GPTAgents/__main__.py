@@ -1,6 +1,7 @@
 """
 Autonomous AI agents with access to system resources
 """
+
 import os
 import json
 from GPTAgents import tools, llm, memory
@@ -105,8 +106,7 @@ while True:
 
     completed_tasks.append(current_general_task)
 
-    if input() != "x":
-        chatbot.reset()
-        continue
-    else:
+    if input() == "x":
         break
+    chatbot.reset()
+    continue

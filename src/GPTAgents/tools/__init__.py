@@ -29,7 +29,7 @@ class Shell:
         while i < len(command):
             if command[i].startswith('"') and not command[i].endswith('"'):
                 while not command[i].endswith('"'):
-                    command[i] = command[i] + " " + command[i + 1]
+                    command[i] = f"{command[i]} {command[i + 1]}"
                     del command[i + 1]
             i += 1
 
@@ -105,8 +105,7 @@ class WebSearch:
             timeout=10,
         )
         resp.encoding = "utf-8" if resp.encoding is None else resp.encoding
-        search_results = resp.text
-        return search_results
+        return resp.text
 
 
 class WebCrawler:
